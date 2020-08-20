@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployjira
+  namespace: akila1456678
+  labels:
+    app: jira
+spec:
+  replicas: 1
+  selector:
+       matchLabels:
+         app: jira
+  template:
+    metadata:
+      labels:
+        app: jira
+    spec:
+      containers:
+        - name: jira
+          image: akilag1997/jira:latest
+          resources:
+            limits:
+              memory: 2Gi
+              cpu: "1"
+            requests:
+              memory: 500Mi
+              cpu: 250m
+          volumeMounts:
+            - name: "jira-home"
+              mountPath: /opt/jira-home
+      volumes:
+        - name: "jira-home"
+          persistentVolumeClaim:
+            claimName: jira-home
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: jira
+  name: svcjira
+  namespace: akila1456678
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: jira
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jira-home
+  namespace: akila1456678
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: default
+  resources:
+    requests:
+      storage: 2Gi
