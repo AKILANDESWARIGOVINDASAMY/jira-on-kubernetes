@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: jira
-          image: akilag1997/jira:latest
+          image: akilag1997/hackakila:latest
           resources:
             limits:
               memory: 2Gi
